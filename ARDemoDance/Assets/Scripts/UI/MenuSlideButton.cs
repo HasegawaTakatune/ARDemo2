@@ -1,14 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
+/// <summary>
+/// 選択メニューの表示/非表示切り替え
+/// </summary>
 public class MenuSlideButton : MonoBehaviour
 {
+    /// <summary>
+    /// ラベル
+    /// </summary>
+    private readonly string[] label = { "<", ">" };
 
-    private enum SLIDE_STATE { HIDE, DISPLAY }
+    /// <summary>
+    /// ラベルテキスト
+    /// </summary>
+    [SerializeField] private Text labelText;
 
-    private SLIDE_STATE state;
+    /// <summary>
+    /// 隠す
+    /// </summary>
+    private const int HIDE = 0;
 
+    /// <summary>
+    /// 表示
+    /// </summary>
+    private const int DISPLAY = 1;
+
+    /// <summary>
+    /// 表示ステータス
+    /// </summary>
+    private int state;
+
+    /// <summary>
+    /// 選択メニュー
+    /// </summary>
     [SerializeField] private RectTransform createMenu;
 
     private Vector3 hidePos;
@@ -17,37 +42,34 @@ public class MenuSlideButton : MonoBehaviour
 
     void Start()
     {
-        state = SLIDE_STATE.HIDE;
+        state = HIDE;
+        labelText.text = label[state];
 
-        float width = Screen.width;
-        float height = Screen.height;
-        float sliceW = 8, sliceH = 2;
+        hidePos = createMenu.localPosition + (Vector3.right * 220);
+        displayPos = createMenu.localPosition;
 
-        hidePos = new Vector3(width + (width / sliceW) + 5, height / sliceH, 0);
-        displayPos = new Vector3(width - (width / sliceW), height / sliceH, 0);
-
-        createMenu.position = hidePos;
+        createMenu.localPosition = hidePos;
     }
 
     public void OnMenuSlideClick()
     {
-
         switch (state)
         {
-            case SLIDE_STATE.HIDE:
-                createMenu.position = displayPos; ;
-                state = SLIDE_STATE.DISPLAY;
+            case HIDE:
+                createMenu.localPosition = displayPos; ;
+                state = DISPLAY;
                 break;
 
-            case SLIDE_STATE.DISPLAY:
-                createMenu.position = hidePos;
-                state = SLIDE_STATE.HIDE;
+            case DISPLAY:
+                createMenu.localPosition = hidePos;
+                state = HIDE;
                 break;
 
             default:
-                createMenu.position = hidePos;
-                state = SLIDE_STATE.HIDE;
+                createMenu.localPosition = hidePos;
+                state = HIDE;
                 break;
         }
+        labelText.text = label[state];
     }
 }

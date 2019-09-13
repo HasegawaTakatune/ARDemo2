@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ShowDebugLog : MonoBehaviour
 {
-
     public static void Count(int cnt)
     {
         Debug.Log("Count : " + cnt);
@@ -27,6 +26,22 @@ public class ShowDebugLog : MonoBehaviour
             Debug.Log("List[" + i + "]:" + objects[i].name);
         }
 
+    }
+
+    public static void List(List<int> values)
+    {
+        for (int i = 0; i < values.Count; i++)
+        {
+            Debug.Log("List[" + i + "]:" + values[i]);
+        }
+    }
+
+    public static void List(List<Furniture> furnitures)
+    {
+        for (int i = 0; i < furnitures.Count; i++)
+        {
+            Debug.Log("List[" + i + "]:" + furnitures[i].Prefab + " " + furnitures[i].Number);
+        }
     }
 
 }
