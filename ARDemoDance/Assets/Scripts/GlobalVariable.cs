@@ -1,8 +1,10 @@
 ﻿
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// グローバル定数群
+/// 後に削除（今は使っていない）
+/// </summary>
 public class GlobalVariable : MonoBehaviour
 {
 

@@ -1,46 +1,81 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using GoogleARCore;
 
-public class UnityChanDance : MonoBehaviour
+/// <summary>
+/// オブジェクト生成・移動をする
+/// </summary>
+public class FurnitureController : MonoBehaviour
 {
 
+    /// <summary>
+    /// 床家具生成リスト
+    /// </summary>
     public ProductionDesign floorProduct;
 
+    /// <summary>
+    /// 床家具インデックス
+    /// </summary>
     public int floorIndex;
 
+    /// <summary>
+    /// 天井家具生成リスト
+    /// </summary>
     public ProductionDesign ceilingProduct;
 
+    /// <summary>
+    /// 床家具インデックス
+    /// </summary>
     public int ceilingIndex;
 
+    /// <summary>
+    /// 壁家具生成リスト
+    /// </summary>
     public ProductionDesign wallProduct;
 
+    /// <summary>
+    /// 壁家具インデックス
+    /// </summary>
     public int wallIndex;
 
+    /// <summary>
+    /// ARカメラ
+    /// </summary>
     public Camera ARCamera;
 
-    public GameObject DetectedPlanePrefab;
-
-    public GameObject VerticalPanelObject;
-
-    public GameObject HorizontalPanelObject;
-
-    public GameObject PointObject;
-
-    private const float modelRotation = 180.0f;
-
+    /// <summary>
+    /// 
+    /// </summary>
     private bool isQuitting = false;
 
+    /// <summary>
+    /// 置く
+    /// </summary>
     private const int PUT = 0;
+
+    /// <summary>
+    /// 移動
+    /// </summary>
     private const int MOVE = 1;
+
+    /// <summary>
+    /// モード
+    /// </summary>
     public int mode;
 
+    /// <summary>
+    /// 選択したオブジェクト
+    /// </summary>
     private GameObject selectedObject;
 
+    /// <summary>
+    /// レイキャストのマスク
+    /// </summary>
     [SerializeField] private LayerMask mask;
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
     public void Awake()
     {
         Application.targetFrameRate = 60;
@@ -48,6 +83,9 @@ public class UnityChanDance : MonoBehaviour
         selectedObject = null;
     }
 
+    /// <summary>
+    /// メインループ
+    /// </summary>
     void Update()
     {
         _UpdateApplicationLifecycle();
@@ -61,12 +99,17 @@ public class UnityChanDance : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// オブジェクトを置く
+    /// </summary>
+    /// <param name="touch">タッチ情報</param>
     private void PutObjects(Touch touch)
     {
         if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began) return;
 
         if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
 
+        // 認識した面によって生成するオブジェクトを切り替える
         TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon | TrackableHitFlags.FeaturePointWithSurfaceNormal;
         if (Frame.Raycast(touch.position.x, touch.position.y, raycastFilter, out TrackableHit hit))
         {
@@ -84,10 +127,12 @@ public class UnityChanDance : MonoBehaviour
                     DetectedPlane detectedPlane = hit.Trackable as DetectedPlane;
                     if (detectedPlane.PlaneType == DetectedPlaneType.Vertical)
                     {
+                        // 壁オブジェクト生成
                         return;
                     }
                     else if (detectedPlane.PlaneType == DetectedPlaneType.HorizontalDownwardFacing)
                     {
+                        // 天井オブジェクト生成
                         GameObject obj = ceilingProduct.PutCeiling(ceilingIndex, hit.Pose.position, hit.Pose.rotation);
 
                         Anchor anchor = hit.Trackable.CreateAnchor(hit.Pose);
@@ -95,6 +140,7 @@ public class UnityChanDance : MonoBehaviour
                     }
                     else if (detectedPlane.PlaneType == DetectedPlaneType.HorizontalUpwardFacing)
                     {
+                        // 床オブジェクト生成
                         GameObject obj = floorProduct.PutFloor(floorIndex, hit.Pose.position, hit.Pose.rotation);
 
                         Anchor anchor = hit.Trackable.CreateAnchor(hit.Pose);
@@ -109,6 +155,10 @@ public class UnityChanDance : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// オブジェクトを移動
+    /// </summary>
+    /// <param name="touch"></param>
     private void MoveObjects(Touch touch)
     {
         if (Input.touchCount < 1) { return; }
@@ -120,6 +170,7 @@ public class UnityChanDance : MonoBehaviour
             case TouchPhase.Began:
                 if (selectedObject == null)
                 {
+                    // 移動するオブジェクトを選択する
                     Ray ray = Camera.main.ScreenPointToRay(touch.position);
                     if (Physics.Raycast(ray, out RaycastHit hit, 10.0f, mask))
                     {
@@ -133,6 +184,7 @@ public class UnityChanDance : MonoBehaviour
             case TouchPhase.Stationary:
                 if (selectedObject != null)
                 {
+                    // ほかのオブジェクトの位置に移動した場合、上に乗っかるようにする
                     Ray ray = Camera.main.ScreenPointToRay(touch.position);
                     if (Physics.Raycast(ray, out RaycastHit rHit, 10.0f, mask))
                     {
@@ -140,6 +192,7 @@ public class UnityChanDance : MonoBehaviour
                         break;
                     }
 
+                    // 認識した面を移動する
                     TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon | TrackableHitFlags.FeaturePointWithSurfaceNormal;
                     if (Frame.Raycast(touch.position.x, touch.position.y, raycastFilter, out TrackableHit tHit))
                     {
@@ -153,53 +206,7 @@ public class UnityChanDance : MonoBehaviour
                 selectedObject = null;
                 break;
 
-        }
-
-        //if (selectedObject == null)
-        //{
-        //    Ray ray = Camera.main.ScreenPointToRay(touch.position);
-        //    if (Physics.Raycast(ray, out RaycastHit hit, 10.0f, mask))
-        //    {
-        //        selectedObject = hit.collider.gameObject;
-        //        SelectedObject.Name = selectedObject.name;
-        //    }
-        //}
-        //else
-        //{
-        //    TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon | TrackableHitFlags.FeaturePointWithSurfaceNormal;
-        //    if (Frame.Raycast(touch.position.x, touch.position.y, raycastFilter, out TrackableHit hit))
-        //    {
-        //        if ((hit.Trackable is DetectedPlane) &&
-        //            Vector3.Dot(ARCamera.transform.position - hit.Pose.position,
-        //            hit.Pose.rotation * Vector3.up) < 0) { }
-        //        else
-        //        {
-        //            if (Physics.SphereCast(hit.Pose.position, 2.0f, Vector3.zero, out RaycastHit hit2, 0.0f))
-        //            {
-        //                selectedObject.transform.position = hit.Pose.position + (Vector3.up * hit2.transform.localScale.y);
-        //            }
-        //            else
-        //            {
-        //                selectedObject.transform.position = hit.Pose.position + (Vector3.up * 0.1f);
-        //            }
-        //        }
-        //    }
-
-        //    //// タップした座標が平面か判定する
-        //    //TrackableHitFlags filter = TrackableHitFlags.PlaneWithinPolygon;
-        //    //if (Frame.Raycast(touch.position.x, touch.position.y, filter, out TrackableHit hit))
-        //    //{
-        //    //    // 平面にヒットしたら位置・姿勢を指定
-        //    //    selectedObject.transform.position = hit.Pose.position;
-        //    //    selectedObject.transform.rotation = hit.Pose.rotation;
-        //    //    selectedObject.transform.Rotate(0, 180, 0, Space.Self);
-
-        //    //    // Anchorを設定
-        //    //    Anchor anchor = hit.Trackable.CreateAnchor(hit.Pose);
-        //    //    selectedObject.transform.parent = anchor.transform;
-        //    //    // ※Anchor設定は指を離した時だけで十分。
-        //    //}
-        //}
+        }        
     }
 
     /// <summary>

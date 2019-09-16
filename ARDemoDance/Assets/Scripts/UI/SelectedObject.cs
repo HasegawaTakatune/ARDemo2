@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 選択したオブジェクトをテキスト表示（デバッグ用）
+/// </summary>
 public class SelectedObject : MonoBehaviour
 {
     private static Text text;

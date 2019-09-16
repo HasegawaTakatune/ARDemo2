@@ -17,7 +17,7 @@ public class MenuSlideButton : MonoBehaviour
     [SerializeField] private Text labelText;
 
     /// <summary>
-    /// 隠す
+    /// 非表示
     /// </summary>
     private const int HIDE = 0;
 
@@ -36,36 +36,50 @@ public class MenuSlideButton : MonoBehaviour
     /// </summary>
     [SerializeField] private RectTransform createMenu;
 
+    /// <summary>
+    /// 非表示の座標
+    /// </summary>
     private Vector3 hidePos;
 
+    /// <summary>
+    /// 表示の座標
+    /// </summary>
     private Vector3 displayPos;
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
     void Start()
     {
+        // 最初は隠す
         state = HIDE;
         labelText.text = label[state];
 
+        // 実際の画面サイズから表示/非表示座標を決める
         hidePos = createMenu.localPosition + (Vector3.right * 220);
         displayPos = createMenu.localPosition;
 
         createMenu.localPosition = hidePos;
     }
 
+    /// <summary>
+    /// メニュー表示/非表示ボタン
+    /// </summary>
     public void OnMenuSlideClick()
     {
         switch (state)
         {
-            case HIDE:
+            case HIDE:      // 非表示
                 createMenu.localPosition = displayPos; ;
                 state = DISPLAY;
                 break;
 
-            case DISPLAY:
+            case DISPLAY:   // 表示
                 createMenu.localPosition = hidePos;
                 state = HIDE;
                 break;
 
-            default:
+            default:        // それ以外
                 createMenu.localPosition = hidePos;
                 state = HIDE;
                 break;
