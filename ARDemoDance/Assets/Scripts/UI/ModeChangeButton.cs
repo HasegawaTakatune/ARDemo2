@@ -11,7 +11,7 @@ public class ModeChangeButton : MonoBehaviour
     /// <summary>
     /// 制御クラス
     /// </summary>
-    [SerializeField] private UnityChanDance dance;
+    [SerializeField] private FurnitureController controller;
 
     /// <summary>
     /// 設置
@@ -47,7 +47,7 @@ public class ModeChangeButton : MonoBehaviour
         mode = PUT;
         label.text = labelName[mode];
 
-        dance.mode = mode;
+        controller.mode = mode;
     }
 
     /// <summary>
@@ -67,6 +67,6 @@ public class ModeChangeButton : MonoBehaviour
                 label.text = labelName[mode];
                 break;
         }
-        dance.mode = mode;
+        controller.mode = mode;
     }
 }

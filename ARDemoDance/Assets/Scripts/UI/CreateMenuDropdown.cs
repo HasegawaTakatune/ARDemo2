@@ -11,7 +11,7 @@ public class CreateMenuDropdown : MonoBehaviour
     /// <summary>
     /// オブジェクトの生成リストの集約場所
     /// </summary>
-    [SerializeField] private UnityChanDance dance;
+    [SerializeField] private FurnitureController controller;
 
     /// <summary>
     /// 床のドロップダウンメニュー
@@ -44,9 +44,9 @@ public class CreateMenuDropdown : MonoBehaviour
     private IEnumerator Setup()
     {
         // 各オブジェクト生成リストを取得
-        ProductionDesign floor = dance.floorProduct;
-        ProductionDesign ceiling = dance.ceilingProduct;
-        ProductionDesign wall = dance.wallProduct;
+        ProductionDesign floor = controller.floorProduct;
+        ProductionDesign ceiling = controller.ceilingProduct;
+        ProductionDesign wall = controller.wallProduct;
 
         // オブジェクトの初期化が整うまで待つ
         while (true)
@@ -86,18 +86,18 @@ public class CreateMenuDropdown : MonoBehaviour
     /// プルダウンメニュー変更イベント
     /// </summary>
     /// <param name="dropdown">プルダウンコンポネント</param>
-    public void OnChangedFloor(Dropdown dropdown) { dance.floorIndex = dropdown.value; }
+    public void OnChangedFloor(Dropdown dropdown) { controller.floorIndex = dropdown.value; }
 
     /// <summary>
     /// プルダウンメニュー変更イベント
     /// </summary>
     /// <param name="dropdown">プルダウンコンポネント</param>
-    public void OnChangedCeiling(Dropdown dropdown) { dance.ceilingIndex = dropdown.value; }
+    public void OnChangedCeiling(Dropdown dropdown) { controller.ceilingIndex = dropdown.value; }
 
     /// <summary>
     /// プルダウンメニュー変更イベント
     /// </summary>
     /// <param name="dropdown">プルダウンコンポネント</param>
-    public void OnChangedWall(Dropdown dropdown) { dance.wallIndex = dropdown.value; }
+    public void OnChangedWall(Dropdown dropdown) { controller.wallIndex = dropdown.value; }
 
 }

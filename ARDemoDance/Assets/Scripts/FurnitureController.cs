@@ -59,6 +59,11 @@ public class FurnitureController : MonoBehaviour
     private const int MOVE = 1;
 
     /// <summary>
+    /// メジャー
+    /// </summary>
+    private const int MAJOR = 2;
+
+    /// <summary>
     /// モード
     /// </summary>
     public int mode;
@@ -128,7 +133,10 @@ public class FurnitureController : MonoBehaviour
                     if (detectedPlane.PlaneType == DetectedPlaneType.Vertical)
                     {
                         // 壁オブジェクト生成
-                        return;
+                        GameObject obj = wallProduct.PutWall(wallIndex, hit.Pose.position, hit.Pose.rotation);
+
+                        Anchor anchor = hit.Trackable.CreateAnchor(hit.Pose);
+                        obj.transform.parent = anchor.transform;
                     }
                     else if (detectedPlane.PlaneType == DetectedPlaneType.HorizontalDownwardFacing)
                     {
@@ -206,7 +214,7 @@ public class FurnitureController : MonoBehaviour
                 selectedObject = null;
                 break;
 
-        }        
+        }
     }
 
     /// <summary>

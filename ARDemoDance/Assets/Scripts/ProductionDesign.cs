@@ -123,6 +123,32 @@ public class ProductionDesign : MonoBehaviour
     }
 
     /// <summary>
+    /// 家具を壁に置く
+    /// </summary>
+    /// <param name="index">インデックス</param>
+    /// <param name="pos">座標</param>
+    /// <param name="rota">向き</param>
+    /// <returns>生成したオブジェクト</returns>
+    public GameObject PutWall(int index, Vector3 pos, Quaternion rota)
+    {
+        // オブジェクト生成
+        GameObject obj = Instantiate(prefabs[index], pos, rota);
+        obj.transform.Rotate(0, 0, 0, Space.Self);
+
+        // リストに追加
+        objects[index].Add(obj);
+
+        // 最大生成数を超えていれば、最初に設置したオブジェクトを削除する
+        if (objects[index].Count > maxNum[index])
+        {
+            Destroy(objects[index][0]);
+            objects[index].RemoveAt(0);
+        }
+
+        return obj;
+    }
+
+    /// <summary>
     /// リストの長さを返す
     /// </summary>
     /// <returns>リストの長さ</returns>
